@@ -529,8 +529,14 @@ describe('expandRecurringEvents', () => {
       new Date('2026-07-12T23:59:59')
     );
     expect(result).toHaveLength(3);
-    expect(result[0].startAt).toContain('2026-07-10T23:00:00');
-    expect(result[0].endAt).toContain('2026-07-11T07:00:00');
+    const firstStart = new Date(result[0].startAt);
+    const firstEnd = new Date(result[0].endAt);
+    expect([firstStart.getMonth(), firstStart.getDate(), firstStart.getHours(), firstStart.getMinutes()]).toEqual([
+      6, 10, 23, 0,
+    ]);
+    expect([firstEnd.getMonth(), firstEnd.getDate(), firstEnd.getHours(), firstEnd.getMinutes()]).toEqual([
+      6, 11, 7, 0,
+    ]);
     expect(result[0].id).not.toBe(event.id);
   });
 
