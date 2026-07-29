@@ -984,7 +984,7 @@ Note: `formatTimeRange`/`formatDayHeading`/`formatWeekdayLabel` fix the **locale
 - [ ] **Step 4: Run the tests and verify they pass**
 
 Run: `npx vitest run src/lib/__tests__/datetime.test.ts`
-Expected: PASS (8 tests)
+Expected: PASS (7 tests)
 
 - [ ] **Step 5: Commit**
 
