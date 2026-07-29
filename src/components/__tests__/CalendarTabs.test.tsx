@@ -39,4 +39,28 @@ describe('CalendarTabs', () => {
     fireEvent.click(screen.getByRole('button', { name: 'month' }));
     expect(screen.queryByText('Client work')).not.toBeInTheDocument();
   });
+
+  it('includes a late-day recurring instance on the last day of the visible week', () => {
+    // 2026-07-28 is a Tuesday; its week runs Sun 2026-07-26 to Sat 2026-08-01.
+    const recurringEvents: CalendarEvent[] = [
+      {
+        id: 'evt-sleep',
+        title: 'Sleep',
+        categoryId: 'cat-work',
+        startAt: '2026-07-01T23:00:00',
+        endAt: '2026-07-02T07:00:00',
+        isRecurring: true,
+        recurrence: { freq: 'daily', until: '2026-12-31' },
+      },
+    ];
+    render(
+      <CalendarTabs
+        events={recurringEvents}
+        categories={categories}
+        initialDate={new Date('2026-07-28T12:00:00')}
+      />
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'week' }));
+    expect(screen.getAllByText('Sleep')).toHaveLength(7);
+  });
 });

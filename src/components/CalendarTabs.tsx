@@ -25,12 +25,13 @@ export function CalendarTabs({ events, categories, initialDate = new Date() }: C
   }, [view, date]);
 
   const rangeEnd = useMemo(() => {
-    if (view === 'day') {
-      return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
-    }
-    if (view === 'week') return getWeekDays(date)[6];
+    const endOfDay = (d: Date) =>
+      new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+
+    if (view === 'day') return endOfDay(date);
+    if (view === 'week') return endOfDay(getWeekDays(date)[6]);
     const grid = getMonthGrid(date);
-    return grid[grid.length - 1][6];
+    return endOfDay(grid[grid.length - 1][6]);
   }, [view, date]);
 
   const visibleEvents = useMemo(
