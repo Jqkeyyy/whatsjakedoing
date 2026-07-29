@@ -63,6 +63,13 @@ describe('POST /api/login', () => {
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it('returns 400 when password is not a string', async () => {
+    const req = mockReq({ method: 'POST', body: { password: 123 } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
 
 describe('DELETE /api/login', () => {
