@@ -1603,8 +1603,34 @@ describe('CalendarTabs', () => {
     fireEvent.click(screen.getByRole('button', { name: 'month' }));
     expect(screen.queryByText('Client work')).not.toBeInTheDocument();
   });
+
+  it('includes a late-day recurring instance on the last day of the visible week', () => {
+    // 2026-07-28 is a Tuesday; its week runs Sun 2026-07-26 to Sat 2026-08-01.
+    const recurringEvents: CalendarEvent[] = [
+      {
+        id: 'evt-sleep',
+        title: 'Sleep',
+        categoryId: 'cat-work',
+        startAt: '2026-07-01T23:00:00',
+        endAt: '2026-07-02T07:00:00',
+        isRecurring: true,
+        recurrence: { freq: 'daily', until: '2026-12-31' },
+      },
+    ];
+    render(
+      <CalendarTabs
+        events={recurringEvents}
+        categories={categories}
+        initialDate={new Date('2026-07-28T12:00:00')}
+      />
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'week' }));
+    expect(screen.getAllByText('Sleep')).toHaveLength(7);
+  });
 });
 ```
+
+Note: this last test guards against a real bug found during manual browser verification (Task 14) — `rangeEnd` for week/month views must be end-of-day, not midnight, or late-day instances on the last visible day get excluded. The Step 3 implementation below already reflects the fix.
 
 - [ ] **Step 2: Run the tests and verify they fail**
 
@@ -1641,12 +1667,13 @@ export function CalendarTabs({ events, categories, initialDate = new Date() }: C
   }, [view, date]);
 
   const rangeEnd = useMemo(() => {
-    if (view === 'day') {
-      return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
-    }
-    if (view === 'week') return getWeekDays(date)[6];
+    const endOfDay = (d: Date) =>
+      new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+
+    if (view === 'day') return endOfDay(date);
+    if (view === 'week') return endOfDay(getWeekDays(date)[6]);
     const grid = getMonthGrid(date);
-    return grid[grid.length - 1][6];
+    return endOfDay(grid[grid.length - 1][6]);
   }, [view, date]);
 
   const visibleEvents = useMemo(
@@ -1683,7 +1710,7 @@ export function CalendarTabs({ events, categories, initialDate = new Date() }: C
 - [ ] **Step 4: Run the tests and verify they pass**
 
 Run: `npx vitest run src/components/__tests__/CalendarTabs.test.tsx`
-Expected: PASS (3 tests)
+Expected: PASS (4 tests)
 
 - [ ] **Step 5: Commit**
 
