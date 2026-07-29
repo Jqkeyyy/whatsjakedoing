@@ -7,7 +7,7 @@ const categories: Category[] = [{ id: 'cat-work', name: 'Work', color: '#9A3412'
 
 describe('DayView', () => {
   it('shows an empty state when there are no events', () => {
-    render(<DayView date={new Date('2026-07-28')} events={[]} categories={categories} />);
+    render(<DayView date={new Date('2026-07-28T12:00:00')} events={[]} categories={categories} />);
     expect(screen.getByText('Nothing scheduled.')).toBeInTheDocument();
   });
 
@@ -30,7 +30,7 @@ describe('DayView', () => {
         isRecurring: false,
       },
     ];
-    render(<DayView date={new Date('2026-07-28')} events={events} categories={categories} />);
+    render(<DayView date={new Date('2026-07-28T12:00:00')} events={events} categories={categories} />);
     const titles = screen.getAllByText(/block/).map((el) => el.textContent);
     expect(titles).toEqual(['Morning block', 'Afternoon block']);
   });

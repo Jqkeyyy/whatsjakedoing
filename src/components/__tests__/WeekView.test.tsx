@@ -7,7 +7,7 @@ const categories: Category[] = [{ id: 'cat-work', name: 'Work', color: '#9A3412'
 
 describe('WeekView', () => {
   it('renders 7 day columns', () => {
-    render(<WeekView date={new Date('2026-07-28')} events={[]} categories={categories} />);
+    render(<WeekView date={new Date('2026-07-28T12:00:00')} events={[]} categories={categories} />);
     expect(screen.getAllByText(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)/)).toHaveLength(7);
   });
 
@@ -22,7 +22,7 @@ describe('WeekView', () => {
         isRecurring: false,
       },
     ];
-    render(<WeekView date={new Date('2026-07-28')} events={events} categories={categories} />);
+    render(<WeekView date={new Date('2026-07-28T12:00:00')} events={events} categories={categories} />);
     expect(screen.getByText('Client work')).toBeInTheDocument();
   });
 });

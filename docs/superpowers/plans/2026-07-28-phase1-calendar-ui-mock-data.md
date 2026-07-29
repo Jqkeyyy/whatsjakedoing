@@ -1230,7 +1230,7 @@ const categories: Category[] = [{ id: 'cat-work', name: 'Work', color: '#9A3412'
 
 describe('DayView', () => {
   it('shows an empty state when there are no events', () => {
-    render(<DayView date={new Date('2026-07-28')} events={[]} categories={categories} />);
+    render(<DayView date={new Date('2026-07-28T12:00:00')} events={[]} categories={categories} />);
     expect(screen.getByText('Nothing scheduled.')).toBeInTheDocument();
   });
 
@@ -1253,7 +1253,7 @@ describe('DayView', () => {
         isRecurring: false,
       },
     ];
-    render(<DayView date={new Date('2026-07-28')} events={events} categories={categories} />);
+    render(<DayView date={new Date('2026-07-28T12:00:00')} events={events} categories={categories} />);
     const titles = screen.getAllByText(/block/).map((el) => el.textContent);
     expect(titles).toEqual(['Morning block', 'Afternoon block']);
   });
@@ -1339,7 +1339,7 @@ const categories: Category[] = [{ id: 'cat-work', name: 'Work', color: '#9A3412'
 
 describe('WeekView', () => {
   it('renders 7 day columns', () => {
-    render(<WeekView date={new Date('2026-07-28')} events={[]} categories={categories} />);
+    render(<WeekView date={new Date('2026-07-28T12:00:00')} events={[]} categories={categories} />);
     expect(screen.getAllByText(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)/)).toHaveLength(7);
   });
 
@@ -1354,7 +1354,7 @@ describe('WeekView', () => {
         isRecurring: false,
       },
     ];
-    render(<WeekView date={new Date('2026-07-28')} events={events} categories={categories} />);
+    render(<WeekView date={new Date('2026-07-28T12:00:00')} events={events} categories={categories} />);
     expect(screen.getByText('Client work')).toBeInTheDocument();
   });
 });
@@ -1454,7 +1454,7 @@ const categories: Category[] = [{ id: 'cat-work', name: 'Work', color: '#9A3412'
 describe('MonthView', () => {
   it('renders full weeks of 7 days each', () => {
     const { container } = render(
-      <MonthView date={new Date('2026-07-15')} events={[]} categories={categories} />
+      <MonthView date={new Date('2026-07-15T12:00:00')} events={[]} categories={categories} />
     );
     const dayCells = container.querySelectorAll('.grid > div');
     expect(dayCells.length % 7).toBe(0);
@@ -1473,7 +1473,7 @@ describe('MonthView', () => {
       },
     ];
     const { container } = render(
-      <MonthView date={new Date('2026-07-15')} events={events} categories={categories} />
+      <MonthView date={new Date('2026-07-15T12:00:00')} events={events} categories={categories} />
     );
     expect(container.querySelectorAll('[aria-hidden="true"]')).toHaveLength(1);
   });
@@ -1583,14 +1583,14 @@ const events: CalendarEvent[] = [
 describe('CalendarTabs', () => {
   it('defaults to the Day view', () => {
     render(
-      <CalendarTabs events={events} categories={categories} initialDate={new Date('2026-07-28')} />
+      <CalendarTabs events={events} categories={categories} initialDate={new Date('2026-07-28T12:00:00')} />
     );
     expect(screen.getByText('Client work')).toBeInTheDocument();
   });
 
   it('switches to Week view when the Week tab is clicked', () => {
     render(
-      <CalendarTabs events={events} categories={categories} initialDate={new Date('2026-07-28')} />
+      <CalendarTabs events={events} categories={categories} initialDate={new Date('2026-07-28T12:00:00')} />
     );
     fireEvent.click(screen.getByRole('button', { name: 'week' }));
     expect(screen.getAllByText(/^(Sun|Mon|Tue|Wed|Thu|Fri|Sat)/).length).toBeGreaterThan(0);
@@ -1598,7 +1598,7 @@ describe('CalendarTabs', () => {
 
   it('switches to Month view when the Month tab is clicked', () => {
     render(
-      <CalendarTabs events={events} categories={categories} initialDate={new Date('2026-07-28')} />
+      <CalendarTabs events={events} categories={categories} initialDate={new Date('2026-07-28T12:00:00')} />
     );
     fireEvent.click(screen.getByRole('button', { name: 'month' }));
     expect(screen.queryByText('Client work')).not.toBeInTheDocument();
