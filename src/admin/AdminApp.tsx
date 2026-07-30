@@ -15,6 +15,7 @@ export function AdminApp() {
   const [authenticated, setAuthenticated] = useState(false);
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [showEventForm, setShowEventForm] = useState(false);
+  const [logoutError, setLogoutError] = useState<string | null>(null);
 
   const { categories, events, statusOverride, loading, error, refetch } = useAdminData();
 
@@ -32,19 +33,32 @@ export function AdminApp() {
 
   const status = deriveStatus(events, categories, statusOverride, new Date());
 
+  async function handleLogout() {
+    setLogoutError(null);
+    try {
+      await logout();
+      setAuthenticated(false);
+    } catch (err) {
+      setLogoutError(err instanceof Error ? err.message : 'Failed to log out');
+    }
+  }
+
   return (
     <div className="min-h-screen bg-cream p-4 sm:p-8">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-xl text-ink">Admin</h1>
         <button
           type="button"
-          onClick={() => logout().then(() => setAuthenticated(false))}
+          onClick={() => {
+            void handleLogout();
+          }}
           className="rounded-full border-2 border-ink px-3 py-1.5 text-sm font-semibold text-ink"
         >
           Log out
         </button>
       </div>
 
+      {logoutError && <p className="mt-4 text-sm text-terracotta">{logoutError}</p>}
       {loading && <p className="mt-4 text-sm text-stone-500">Loading…</p>}
       {error && <p className="mt-4 text-sm text-terracotta">{error}</p>}
 
