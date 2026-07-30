@@ -76,4 +76,41 @@ describe('EventForm — edit mode', () => {
     expect(adminApi.deleteEvent).toHaveBeenCalledWith('e1');
     expect(onSaved).toHaveBeenCalled();
   });
+
+  // A recurring event instance expanded onto the calendar has a synthesized
+  // id like `${baseId}__${instanceDate}` (see src/lib/recurrence.ts). Editing
+  // or deleting that instance must resolve back to the base event id before
+  // calling the API — these tests exercise that split, unlike the ones above
+  // where the plain id 'e1' trivially survives a no-op split.
+  const recurringInstance: CalendarEvent = {
+    ...existing,
+    id: 'e1__2026-08-05',
+    isRecurring: true,
+  };
+
+  it('resolves a synthesized recurring instance id back to the base event id on save', async () => {
+    vi.spyOn(adminApi, 'updateEvent').mockResolvedValue(existing);
+    const onSaved = vi.fn();
+    render(
+      <EventForm categories={categories} initialEvent={recurringInstance} onSaved={onSaved} onClose={vi.fn()} />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(adminApi.updateEvent).toHaveBeenCalledWith('e1', expect.objectContaining({ title: 'Gym' }));
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('resolves a synthesized recurring instance id back to the base event id on delete', async () => {
+    vi.spyOn(adminApi, 'deleteEvent').mockResolvedValue(undefined);
+    const onSaved = vi.fn();
+    render(
+      <EventForm categories={categories} initialEvent={recurringInstance} onSaved={onSaved} onClose={vi.fn()} />
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: /delete/i }));
+
+    expect(adminApi.deleteEvent).toHaveBeenCalledWith('e1');
+    expect(onSaved).toHaveBeenCalled();
+  });
 });
