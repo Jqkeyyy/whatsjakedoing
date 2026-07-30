@@ -28,7 +28,10 @@ const sessionSecret = randomBytes(32).toString('hex');
 const filtered = lines.filter(
   (l) => !l.startsWith('ADMIN_PASSWORD=') && !l.startsWith('ADMIN_PASSWORD_HASH=') && !l.startsWith('SESSION_SECRET=')
 );
-filtered.push(`ADMIN_PASSWORD_HASH=${hash}`, `SESSION_SECRET=${sessionSecret}`);
+// Quoted: an unquoted bcrypt hash (e.g. `$2a$10$...`) is corrupted by
+// dotenv-style variable-expansion parsers, which treat `$2a`/`$10` as
+// shell-style variable references and silently blank them out.
+filtered.push(`ADMIN_PASSWORD_HASH="${hash}"`, `SESSION_SECRET="${sessionSecret}"`);
 
 writeFileSync(path, filtered.filter((l) => l !== '').join('\n') + '\n');
 console.log('Done. ADMIN_PASSWORD_HASH and SESSION_SECRET written to .env.local; plaintext password removed.');
