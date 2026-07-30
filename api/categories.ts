@@ -8,7 +8,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'POST') {
     const { name, color, icon, isBusy } = req.body ?? {};
-    if (!name || !color || typeof isBusy !== 'boolean') {
+    if (typeof name !== 'string' || !name || typeof color !== 'string' || !color || typeof isBusy !== 'boolean') {
       return res.status(400).json({ error: 'name, color, and isBusy are required' });
     }
     const { data, error } = await supabase
@@ -22,7 +22,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'PUT') {
     const { id, name, color, icon, isBusy } = req.body ?? {};
-    if (!id) return res.status(400).json({ error: 'id is required' });
+    if (!id || typeof name !== 'string' || !name || typeof color !== 'string' || !color || typeof isBusy !== 'boolean') {
+      return res.status(400).json({ error: 'id, name, color, and isBusy are required' });
+    }
     const { data, error } = await supabase
       .from('categories')
       .update({ name, color, icon, is_busy: isBusy })

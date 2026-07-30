@@ -66,6 +66,51 @@ describe('POST /api/categories', () => {
   });
 });
 
+describe('PUT /api/categories', () => {
+  it('updates a category and returns 200', async () => {
+    const row = { id: '1', name: 'Work', color: '#fff', icon: 'briefcase', is_busy: false };
+    const chain = mockSupabaseChain({ data: row, error: null });
+    vi.spyOn(supabaseAdmin, 'getSupabaseAdmin').mockReturnValue({
+      from: vi.fn().mockReturnValue(chain),
+    } as never);
+
+    const req = mockReq({ method: 'PUT', body: { id: '1', name: 'Work', color: '#fff', icon: 'briefcase', isBusy: false } });
+    const res = mockRes();
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(row);
+  });
+
+  it('returns 400 when id is missing', async () => {
+    const req = mockReq({ method: 'PUT', body: { name: 'Work', color: '#fff', isBusy: false } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when name is not a string', async () => {
+    const req = mockReq({ method: 'PUT', body: { id: '1', name: 42, color: '#fff', isBusy: false } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when color is not a string', async () => {
+    const req = mockReq({ method: 'PUT', body: { id: '1', name: 'Work', color: 123, isBusy: false } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when isBusy is not a boolean', async () => {
+    const req = mockReq({ method: 'PUT', body: { id: '1', name: 'Work', color: '#fff', isBusy: 'yes' } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+});
+
 describe('DELETE /api/categories', () => {
   it('deletes a category and returns 204', async () => {
     const chain = mockSupabaseChain({ data: null, error: null });
