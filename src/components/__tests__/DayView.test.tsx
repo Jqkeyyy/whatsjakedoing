@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DayView } from '../DayView';
 import type { CalendarEvent, Category } from '../../types';
@@ -33,5 +33,30 @@ describe('DayView', () => {
     render(<DayView date={new Date('2026-07-28T12:00:00')} events={events} categories={categories} />);
     const titles = screen.getAllByText(/block/).map((el) => el.textContent);
     expect(titles).toEqual(['Morning block', 'Afternoon block']);
+  });
+
+  it('forwards onEventClick to each EventCard', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const events: CalendarEvent[] = [
+      {
+        id: 'evt-1',
+        title: 'Morning block',
+        categoryId: 'cat-work',
+        startAt: '2026-07-28T09:00:00',
+        endAt: '2026-07-28T11:00:00',
+        isRecurring: false,
+      },
+    ];
+    const onEventClick = vi.fn();
+    render(
+      <DayView
+        date={new Date('2026-07-28T12:00:00')}
+        events={events}
+        categories={categories}
+        onEventClick={onEventClick}
+      />
+    );
+    await userEvent.click(screen.getByText(events[0].title));
+    expect(onEventClick).toHaveBeenCalledWith(events[0]);
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { EventCard } from '../EventCard';
 import type { CalendarEvent, Category } from '../../types';
@@ -27,5 +27,13 @@ describe('EventCard', () => {
     const noLocation = { ...event, location: undefined };
     render(<EventCard event={noLocation} category={category} />);
     expect(screen.queryByText('Home office')).not.toBeInTheDocument();
+  });
+
+  it('calls onClick when clicked, if provided', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event');
+    const onClick = vi.fn();
+    render(<EventCard event={event} category={category} onClick={onClick} />);
+    await userEvent.click(screen.getByText(event.title));
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
