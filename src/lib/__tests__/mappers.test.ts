@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { mapCategoryRow, mapEventRow, mapStatusOverrideRow } from '../mappers';
+import { mapCategoryRow, mapEventRow, mapStatusOverrideRow, type CategoryRow, type EventRow, type StatusOverrideRow } from '../mappers';
 
 describe('mapCategoryRow', () => {
   it('maps snake_case DB columns to the app Category shape', () => {
-    const row = { id: '1', name: 'Work', color: '#000', icon: null, is_busy: true };
+    const row: CategoryRow = { id: '1', name: 'Work', color: '#000', icon: null, is_busy: true };
     expect(mapCategoryRow(row)).toEqual({
       id: '1',
       name: 'Work',
@@ -16,7 +16,7 @@ describe('mapCategoryRow', () => {
 
 describe('mapEventRow', () => {
   it('maps a non-recurring event row', () => {
-    const row = {
+    const row: EventRow = {
       id: '1',
       title: 'Gym',
       category_id: 'cat-1',
@@ -39,7 +39,7 @@ describe('mapEventRow', () => {
   });
 
   it('maps a recurring event row, preserving the recurrence object', () => {
-    const row = {
+    const row: EventRow = {
       id: '2',
       title: 'Standup',
       category_id: 'cat-2',
@@ -59,7 +59,7 @@ describe('mapEventRow', () => {
 
 describe('mapStatusOverrideRow', () => {
   it('maps snake_case DB columns to the app StatusOverride shape', () => {
-    const row = {
+    const row: StatusOverrideRow = {
       id: '1',
       status_text: 'Napping',
       is_busy: true,
