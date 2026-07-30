@@ -12,9 +12,15 @@ interface CalendarTabsProps {
   events: CalendarEvent[];
   categories: Category[];
   initialDate?: Date;
+  onEventClick?: (event: CalendarEvent) => void;
 }
 
-export function CalendarTabs({ events, categories, initialDate = new Date() }: CalendarTabsProps) {
+export function CalendarTabs({
+  events,
+  categories,
+  initialDate = new Date(),
+  onEventClick,
+}: CalendarTabsProps) {
   const [view, setView] = useState<ViewMode>('day');
   const [date] = useState(initialDate);
 
@@ -56,8 +62,12 @@ export function CalendarTabs({ events, categories, initialDate = new Date() }: C
         ))}
       </div>
       <div className="mt-4">
-        {view === 'day' && <DayView date={date} events={visibleEvents} categories={categories} />}
-        {view === 'week' && <WeekView date={date} events={visibleEvents} categories={categories} />}
+        {view === 'day' && (
+          <DayView date={date} events={visibleEvents} categories={categories} onEventClick={onEventClick} />
+        )}
+        {view === 'week' && (
+          <WeekView date={date} events={visibleEvents} categories={categories} onEventClick={onEventClick} />
+        )}
         {view === 'month' && <MonthView date={date} events={visibleEvents} categories={categories} />}
       </div>
     </div>

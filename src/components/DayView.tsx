@@ -6,9 +6,10 @@ interface DayViewProps {
   date: Date;
   events: CalendarEvent[];
   categories: Category[];
+  onEventClick?: (event: CalendarEvent) => void;
 }
 
-export function DayView({ date, events, categories }: DayViewProps) {
+export function DayView({ date, events, categories, onEventClick }: DayViewProps) {
   const sorted = [...events].sort(
     (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
   );
@@ -23,6 +24,7 @@ export function DayView({ date, events, categories }: DayViewProps) {
             key={event.id}
             event={event}
             category={categories.find((c) => c.id === event.categoryId)}
+            onClick={onEventClick ? () => onEventClick(event) : undefined}
           />
         ))}
       </div>

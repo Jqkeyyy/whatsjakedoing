@@ -6,9 +6,10 @@ interface WeekViewProps {
   date: Date;
   events: CalendarEvent[];
   categories: Category[];
+  onEventClick?: (event: CalendarEvent) => void;
 }
 
-export function WeekView({ date, events, categories }: WeekViewProps) {
+export function WeekView({ date, events, categories, onEventClick }: WeekViewProps) {
   const days = getWeekDays(date);
 
   return (
@@ -27,7 +28,12 @@ export function WeekView({ date, events, categories }: WeekViewProps) {
               {dayEvents.map((event) => {
                 const category = categories.find((c) => c.id === event.categoryId);
                 return (
-                  <div key={event.id} className="text-xs">
+                  <div
+                    key={event.id}
+                    className={`text-xs ${onEventClick ? 'cursor-pointer' : ''}`}
+                    onClick={onEventClick ? () => onEventClick(event) : undefined}
+                    role={onEventClick ? 'button' : undefined}
+                  >
                     <CategoryDot color={category?.color ?? '#292524'} />
                     <span className="ml-1">{event.title}</span>
                     <span className="ml-1 text-stone-500">
