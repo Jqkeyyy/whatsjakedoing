@@ -12,9 +12,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   if (req.method === 'POST') {
     const { password } = req.body ?? {};
-    const hash = process.env.ADMIN_PASSWORD_HASH;
-    if (!password || typeof password !== 'string' || !hash) {
+    if (!password || typeof password !== 'string') {
       return res.status(400).json({ error: 'Missing password' });
+    }
+    const hash = process.env.ADMIN_PASSWORD_HASH;
+    if (!hash) {
+      console.error('POST /api/login failed: ADMIN_PASSWORD_HASH is not configured');
+      return res.status(500).json({ error: 'Internal server error' });
     }
     const valid = await bcrypt.compare(password, hash);
     if (!valid) {

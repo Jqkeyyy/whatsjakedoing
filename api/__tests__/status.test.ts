@@ -94,6 +94,47 @@ describe('POST /api/status', () => {
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it('returns 400 when statusText is not a string', async () => {
+    const req = mockReq({
+      method: 'POST',
+      body: {
+        statusText: 42,
+        isBusy: true,
+        startsAt: '2026-07-29T14:00:00.000Z',
+        endsAt: '2026-07-29T15:00:00.000Z',
+      },
+    });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns a generic error message and logs the details when Supabase errors', async () => {
+    const insert = vi.fn().mockReturnThis();
+    const select = vi.fn().mockReturnThis();
+    const single = vi.fn().mockResolvedValue({ data: null, error: { message: 'relation "status_override" does not exist' } });
+    vi.spyOn(supabaseAdmin, 'getSupabaseAdmin').mockReturnValue({
+      from: vi.fn().mockReturnValue({ insert, select, single }),
+    } as never);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const req = mockReq({
+      method: 'POST',
+      body: {
+        statusText: 'Napping',
+        isBusy: true,
+        startsAt: '2026-07-29T14:00:00.000Z',
+        endsAt: '2026-07-29T15:00:00.000Z',
+      },
+    });
+    const res = mockRes();
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+    expect(consoleError).toHaveBeenCalled();
+  });
 });
 
 describe('DELETE /api/status', () => {
@@ -109,6 +150,20 @@ describe('DELETE /api/status', () => {
 
     expect(eq).toHaveBeenCalledWith('id', '1');
     expect(res.status).toHaveBeenCalledWith(204);
+  });
+
+  it('returns 400 when id is missing', async () => {
+    const req = mockReq({ method: 'DELETE', body: {} });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when id is not a string', async () => {
+    const req = mockReq({ method: 'DELETE', body: { id: 1 } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
   });
 });
 

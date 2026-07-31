@@ -64,6 +64,22 @@ describe('POST /api/categories', () => {
     await handler(req, res);
     expect(res.status).not.toHaveBeenCalledWith(201);
   });
+
+  it('returns a generic error message and logs the details when Supabase errors', async () => {
+    const chain = mockSupabaseChain({ data: null, error: { message: 'relation "categories" does not exist' } });
+    vi.spyOn(supabaseAdmin, 'getSupabaseAdmin').mockReturnValue({
+      from: vi.fn().mockReturnValue(chain),
+    } as never);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const req = mockReq({ method: 'POST', body: { name: 'Work', color: '#000', isBusy: true } });
+    const res = mockRes();
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+    expect(consoleError).toHaveBeenCalled();
+  });
 });
 
 describe('PUT /api/categories', () => {
@@ -109,6 +125,20 @@ describe('PUT /api/categories', () => {
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it('returns 400 when id is not a string', async () => {
+    const req = mockReq({ method: 'PUT', body: { id: { $ne: null }, name: 'Work', color: '#fff', isBusy: false } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when icon is not a string', async () => {
+    const req = mockReq({ method: 'PUT', body: { id: '1', name: 'Work', color: '#fff', icon: 42, isBusy: false } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
 
 describe('DELETE /api/categories', () => {
@@ -128,6 +158,13 @@ describe('DELETE /api/categories', () => {
 
   it('returns 400 when id is missing', async () => {
     const req = mockReq({ method: 'DELETE', body: {} });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when id is not a string', async () => {
+    const req = mockReq({ method: 'DELETE', body: { id: 1 } });
     const res = mockRes();
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
