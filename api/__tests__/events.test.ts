@@ -184,6 +184,30 @@ describe('POST /api/events', () => {
     await handler(req, res);
     expect(res.status).not.toHaveBeenCalledWith(201);
   });
+
+  it('returns a generic error message and logs the details when Supabase errors', async () => {
+    const chain = mockSupabaseChain({ data: null, error: { message: 'relation "events" does not exist' } });
+    vi.spyOn(supabaseAdmin, 'getSupabaseAdmin').mockReturnValue({
+      from: vi.fn().mockReturnValue(chain),
+    } as never);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    const req = mockReq({
+      method: 'POST',
+      body: {
+        title: 'Gym',
+        categoryId: 'cat-1',
+        startAt: '2026-07-29T10:00:00.000Z',
+        endAt: '2026-07-29T11:00:00.000Z',
+      },
+    });
+    const res = mockRes();
+    await handler(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+    expect(consoleError).toHaveBeenCalled();
+  });
 });
 
 describe('PUT /api/events', () => {
@@ -315,6 +339,41 @@ describe('PUT /api/events', () => {
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it('returns 400 when location is not a string', async () => {
+    const req = mockReq({
+      method: 'PUT',
+      body: {
+        id: 'event-1',
+        title: 'Gym (updated)',
+        categoryId: 'cat-1',
+        location: 42,
+        startAt: '2026-07-29T10:00:00.000Z',
+        endAt: '2026-07-29T11:00:00.000Z',
+      },
+    });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when recurrence is not an object', async () => {
+    const req = mockReq({
+      method: 'PUT',
+      body: {
+        id: 'event-1',
+        title: 'Gym (updated)',
+        categoryId: 'cat-1',
+        startAt: '2026-07-29T10:00:00.000Z',
+        endAt: '2026-07-29T11:00:00.000Z',
+        isRecurring: true,
+        recurrence: 'weekly',
+      },
+    });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
 });
 
 describe('DELETE /api/events', () => {
@@ -334,6 +393,13 @@ describe('DELETE /api/events', () => {
 
   it('returns 400 when id is missing', async () => {
     const req = mockReq({ method: 'DELETE', body: {} });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when id is not a string', async () => {
+    const req = mockReq({ method: 'DELETE', body: { id: 42 } });
     const res = mockRes();
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);

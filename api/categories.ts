@@ -16,13 +16,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .insert({ name, color, icon: icon ?? null, is_busy: isBusy })
       .select()
       .single();
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.error('POST /api/categories failed', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
     return res.status(201).json(data);
   }
 
   if (req.method === 'PUT') {
     const { id, name, color, icon, isBusy } = req.body ?? {};
-    if (!id || typeof name !== 'string' || !name || typeof color !== 'string' || !color || typeof isBusy !== 'boolean') {
+    if (
+      typeof id !== 'string' ||
+      !id ||
+      typeof name !== 'string' ||
+      !name ||
+      typeof color !== 'string' ||
+      !color ||
+      typeof isBusy !== 'boolean' ||
+      (icon !== undefined && icon !== null && typeof icon !== 'string')
+    ) {
       return res.status(400).json({ error: 'id, name, color, and isBusy are required' });
     }
     const { data, error } = await supabase
@@ -31,15 +43,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .eq('id', id)
       .select()
       .single();
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.error('PUT /api/categories failed', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
     return res.status(200).json(data);
   }
 
   if (req.method === 'DELETE') {
     const { id } = req.body ?? {};
-    if (!id) return res.status(400).json({ error: 'id is required' });
+    if (typeof id !== 'string' || !id) return res.status(400).json({ error: 'id is required' });
     const { error } = await supabase.from('categories').delete().eq('id', id);
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.error('DELETE /api/categories failed', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
     return res.status(204).end();
   }
 

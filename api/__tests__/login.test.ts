@@ -70,6 +70,17 @@ describe('POST /api/login', () => {
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
   });
+
+  it('returns 500 (not 400) when ADMIN_PASSWORD_HASH is not configured, and logs the misconfiguration', async () => {
+    delete process.env.ADMIN_PASSWORD_HASH;
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const req = mockReq({ method: 'POST', body: { password: 'correct-password' } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
+    expect(consoleError).toHaveBeenCalled();
+  });
 });
 
 describe('DELETE /api/login', () => {

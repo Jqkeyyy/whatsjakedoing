@@ -33,7 +33,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       })
       .select()
       .single();
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.error('POST /api/events failed', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
     return res.status(201).json(data);
   }
 
@@ -49,7 +52,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       typeof startAt !== 'string' ||
       !startAt ||
       typeof endAt !== 'string' ||
-      !endAt
+      !endAt ||
+      (location !== undefined && location !== null && typeof location !== 'string') ||
+      (recurrence !== undefined && recurrence !== null && typeof recurrence !== 'object')
     ) {
       return res.status(400).json({ error: 'id, title, categoryId, startAt, and endAt are required' });
     }
@@ -67,15 +72,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .eq('id', id)
       .select()
       .single();
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.error('PUT /api/events failed', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
     return res.status(200).json(data);
   }
 
   if (req.method === 'DELETE') {
     const { id } = req.body ?? {};
-    if (!id) return res.status(400).json({ error: 'id is required' });
+    if (typeof id !== 'string' || !id) return res.status(400).json({ error: 'id is required' });
     const { error } = await supabase.from('events').delete().eq('id', id);
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.error('DELETE /api/events failed', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
     return res.status(204).end();
   }
 
