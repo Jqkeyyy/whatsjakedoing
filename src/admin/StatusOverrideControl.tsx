@@ -82,6 +82,7 @@ export function StatusOverrideControl({ current, onChange }: StatusOverrideContr
             type="datetime-local"
             value={until}
             onChange={(e) => setUntil(e.target.value)}
+            required
             className="rounded-lg border-2 border-ink px-2 py-1"
           />
           {error && <p className="text-sm text-terracotta">{error}</p>}
