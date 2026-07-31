@@ -75,6 +75,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           id="event-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          required
           className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
         />
 
@@ -112,6 +113,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           type="datetime-local"
           value={start}
           onChange={(e) => setStart(e.target.value)}
+          required
           className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
         />
 
@@ -123,6 +125,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           type="datetime-local"
           value={end}
           onChange={(e) => setEnd(e.target.value)}
+          required
           className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
         />
 
