@@ -1,10 +1,10 @@
-// src/hooks/useAdminData.ts
+// src/hooks/useCalendarData.ts
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { mapCategoryRow, mapEventRow, mapStatusOverrideRow } from '../lib/mappers';
 import type { Category, CalendarEvent, StatusOverride } from '../types';
 
-interface AdminData {
+interface CalendarData {
   categories: Category[];
   events: CalendarEvent[];
   statusOverride: StatusOverride | null;
@@ -13,7 +13,7 @@ interface AdminData {
   refetch: () => void;
 }
 
-export function useAdminData(): AdminData {
+export function useCalendarData(): CalendarData {
   const [categories, setCategories] = useState<Category[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [statusOverride, setStatusOverride] = useState<StatusOverride | null>(null);

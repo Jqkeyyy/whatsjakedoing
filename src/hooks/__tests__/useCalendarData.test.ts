@@ -1,7 +1,7 @@
-// src/hooks/__tests__/useAdminData.test.ts
+// src/hooks/__tests__/useCalendarData.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { useAdminData } from '../useAdminData';
+import { useCalendarData } from '../useCalendarData';
 import { supabase } from '../../lib/supabaseClient';
 
 vi.mock('../../lib/supabaseClient', () => ({
@@ -34,9 +34,9 @@ beforeEach(() => {
   });
 });
 
-describe('useAdminData', () => {
+describe('useCalendarData', () => {
   it('loads categories, events, and the active status override', async () => {
-    const { result } = renderHook(() => useAdminData());
+    const { result } = renderHook(() => useCalendarData());
     expect(result.current.loading).toBe(true);
 
     await waitFor(() => expect(result.current.loading).toBe(false));

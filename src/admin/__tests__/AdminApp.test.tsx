@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AdminApp } from '../AdminApp';
 import * as adminApi from '../../lib/adminApi';
-import * as useAdminDataModule from '../../hooks/useAdminData';
+import * as useCalendarDataModule from '../../hooks/useCalendarData';
 import type { Category, CalendarEvent } from '../../types';
 
 const category: Category = {
@@ -25,7 +25,7 @@ const event: CalendarEvent = {
 
 beforeEach(() => {
   vi.restoreAllMocks();
-  vi.spyOn(useAdminDataModule, 'useAdminData').mockReturnValue({
+  vi.spyOn(useCalendarDataModule, 'useCalendarData').mockReturnValue({
     categories: [],
     events: [],
     statusOverride: null,
@@ -65,7 +65,7 @@ describe('AdminApp', () => {
 
   it('opens EventForm pre-filled when a calendar event is clicked', async () => {
     vi.spyOn(adminApi, 'checkSession').mockResolvedValue(true);
-    vi.spyOn(useAdminDataModule, 'useAdminData').mockReturnValue({
+    vi.spyOn(useCalendarDataModule, 'useCalendarData').mockReturnValue({
       categories: [category],
       events: [event],
       statusOverride: null,
@@ -86,7 +86,7 @@ describe('AdminApp', () => {
 
   it('opens EventForm empty in create mode when the Add event FAB is clicked', async () => {
     vi.spyOn(adminApi, 'checkSession').mockResolvedValue(true);
-    vi.spyOn(useAdminDataModule, 'useAdminData').mockReturnValue({
+    vi.spyOn(useCalendarDataModule, 'useCalendarData').mockReturnValue({
       categories: [category],
       events: [event],
       statusOverride: null,

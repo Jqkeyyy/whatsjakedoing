@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { checkSession, logout } from '../lib/adminApi';
-import { useAdminData } from '../hooks/useAdminData';
+import { useCalendarData } from '../hooks/useCalendarData';
 import { deriveStatus } from '../lib/status';
 import { StatusHero } from '../components/StatusHero';
 import { CalendarTabs } from '../components/CalendarTabs';
@@ -17,7 +17,7 @@ export function AdminApp() {
   const [showEventForm, setShowEventForm] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
 
-  const { categories, events, statusOverride, loading, error, refetch } = useAdminData();
+  const { categories, events, statusOverride, loading, error, refetch } = useCalendarData();
 
   useEffect(() => {
     checkSession()
