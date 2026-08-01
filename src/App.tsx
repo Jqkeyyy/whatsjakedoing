@@ -1,14 +1,13 @@
-import { mockCategories } from './mock/categories';
-import { mockEvents } from './mock/events';
+import { useCalendarData } from './hooks/useCalendarData';
 import { mockHubLinks } from './mock/hubLinks';
-import { mockStatusOverride } from './mock/statusOverride';
 import { deriveStatus } from './lib/status';
 import { Sidebar } from './components/Sidebar';
 import { StatusHero } from './components/StatusHero';
 import { CalendarTabs } from './components/CalendarTabs';
 
 function App() {
-  const status = deriveStatus(mockEvents, mockCategories, mockStatusOverride, new Date());
+  const { categories, events, statusOverride, loading, error } = useCalendarData();
+  const status = deriveStatus(events, categories, statusOverride, new Date());
 
   return (
     <div className="flex min-h-screen flex-col bg-cream sm:flex-row">
@@ -17,10 +16,16 @@ function App() {
         hubLinks={mockHubLinks}
       />
       <main className="flex-1 p-4 sm:p-8">
-        <StatusHero status={status} />
-        <div className="mt-6">
-          <CalendarTabs events={mockEvents} categories={mockCategories} />
-        </div>
+        {loading && <p className="text-sm text-stone-500">Loading…</p>}
+        {error && <p className="text-sm text-terracotta">{error}</p>}
+        {!loading && !error && (
+          <>
+            <StatusHero status={status} />
+            <div className="mt-6">
+              <CalendarTabs events={events} categories={categories} />
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
