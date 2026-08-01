@@ -46,7 +46,12 @@ export function AdminApp() {
   return (
     <div className="min-h-screen bg-cream p-4 sm:p-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-display text-xl text-ink">Admin</h1>
+        <div className="flex items-center gap-4">
+          <a href="/" className="text-sm font-semibold text-ink underline">
+            ← Calendar
+          </a>
+          <h1 className="font-display text-xl text-ink">Admin</h1>
+        </div>
         <button
           type="button"
           onClick={() => {
