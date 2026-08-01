@@ -14,12 +14,13 @@ const category: Category = {
   isBusy: true,
 };
 
+const today = new Date();
 const event: CalendarEvent = {
   id: 'event-1',
   title: 'Standup meeting',
   categoryId: 'cat-1',
-  startAt: '2026-07-30T14:00:00.000Z',
-  endAt: '2026-07-30T14:30:00.000Z',
+  startAt: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 1, 0).toISOString(),
+  endAt: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 2, 0).toISOString(),
   isRecurring: false,
 };
 
