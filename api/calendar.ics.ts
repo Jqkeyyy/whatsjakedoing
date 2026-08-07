@@ -3,8 +3,8 @@ import { getSupabaseAdmin } from './_lib/supabaseAdmin';
 import { buildIcsFeed } from './_lib/ics';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    res.setHeader('Allow', 'GET, HEAD');
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
@@ -23,5 +23,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const ics = buildIcsFeed(eventsRes.data ?? [], categoriesRes.data ?? []);
   res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
   res.setHeader('Cache-Control', 'public, max-age=300');
+  if (req.method === 'HEAD') return res.status(200).end();
   return res.status(200).send(ics);
 }
