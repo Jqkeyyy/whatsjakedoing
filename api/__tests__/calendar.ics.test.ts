@@ -13,6 +13,7 @@ function mockRes(): VercelResponse {
   res.json = vi.fn().mockReturnValue(res);
   res.send = vi.fn().mockReturnValue(res);
   res.setHeader = vi.fn().mockReturnValue(res);
+  res.end = vi.fn().mockReturnValue(res);
   return res as VercelResponse;
 }
 
@@ -69,10 +70,26 @@ describe('GET /api/calendar.ics', () => {
     expect(consoleError).toHaveBeenCalled();
   });
 
-  it('returns 405 for non-GET methods', async () => {
+  it('returns 405 for non-GET/HEAD methods', async () => {
     const req = mockReq({ method: 'POST' });
     const res = mockRes();
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(405);
+  });
+
+  it('responds to HEAD with the same headers and no body', async () => {
+    const categories = [{ id: 'cat-1', name: 'Personal' }];
+    vi.spyOn(supabaseAdmin, 'getSupabaseAdmin').mockReturnValue(
+      mockSupabase({ data: [], error: null }, { data: categories, error: null }) as never
+    );
+
+    const req = mockReq({ method: 'HEAD' });
+    const res = mockRes();
+    await handler(req, res);
+
+    expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/calendar; charset=utf-8');
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).not.toHaveBeenCalled();
+    expect(res.end).toHaveBeenCalled();
   });
 });
