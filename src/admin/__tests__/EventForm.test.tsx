@@ -42,6 +42,52 @@ describe('EventForm — create mode', () => {
     );
     expect(onSaved).toHaveBeenCalled();
   });
+
+  it('creates a weekly recurring event with the selected days and until date', async () => {
+    vi.spyOn(adminApi, 'createEvent').mockResolvedValue({
+      id: 'e1',
+      title: 'IT Internship',
+      categoryId: 'c1',
+      startAt: '2026-07-29T13:00:00.000Z',
+      endAt: '2026-07-29T22:00:00.000Z',
+      isRecurring: true,
+      recurrence: { freq: 'weekly', daysOfWeek: [2, 5], until: '2026-12-19' },
+    });
+    const onSaved = vi.fn();
+    render(<EventForm categories={categories} onSaved={onSaved} onClose={vi.fn()} />);
+
+    await userEvent.type(screen.getByLabelText(/title/i), 'IT Internship');
+    fireEvent.change(screen.getByLabelText(/^start/i), { target: { value: '2026-07-29T07:00' } });
+    fireEvent.change(screen.getByLabelText(/^end/i), { target: { value: '2026-07-29T17:00' } });
+    await userEvent.click(screen.getByLabelText(/repeats/i));
+    await userEvent.click(screen.getByLabelText(/^tue$/i));
+    await userEvent.click(screen.getByLabelText(/^fri$/i));
+    fireEvent.change(screen.getByLabelText(/repeat until/i), { target: { value: '2026-12-19' } });
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(adminApi.createEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isRecurring: true,
+        recurrence: { freq: 'weekly', daysOfWeek: [2, 5], until: '2026-12-19' },
+      })
+    );
+    expect(onSaved).toHaveBeenCalled();
+  });
+
+  it('requires at least one day of the week for a weekly recurrence', async () => {
+    const onSaved = vi.fn();
+    render(<EventForm categories={categories} onSaved={onSaved} onClose={vi.fn()} />);
+
+    await userEvent.type(screen.getByLabelText(/title/i), 'IT Internship');
+    fireEvent.change(screen.getByLabelText(/^start/i), { target: { value: '2026-07-29T07:00' } });
+    fireEvent.change(screen.getByLabelText(/^end/i), { target: { value: '2026-07-29T17:00' } });
+    await userEvent.click(screen.getByLabelText(/repeats/i));
+    fireEvent.change(screen.getByLabelText(/repeat until/i), { target: { value: '2026-12-19' } });
+    await userEvent.click(screen.getByRole('button', { name: /save/i }));
+
+    expect(screen.getByText(/pick at least one day/i)).toBeInTheDocument();
+    expect(onSaved).not.toHaveBeenCalled();
+  });
 });
 
 describe('EventForm — edit mode', () => {
@@ -86,6 +132,7 @@ describe('EventForm — edit mode', () => {
     ...existing,
     id: 'e1__2026-08-05',
     isRecurring: true,
+    recurrence: { freq: 'weekly', daysOfWeek: [3], until: '2026-12-31' },
   };
 
   it('resolves a synthesized recurring instance id back to the base event id on save', async () => {
