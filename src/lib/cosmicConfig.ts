@@ -1,3 +1,7 @@
 export const SHOOTING_STAR_MIN_DELAY_MS = 3 * 60_000;
 export const SHOOTING_STAR_MAX_DELAY_MS = 10 * 60_000;
 export const SHOOTING_STAR_VISIBLE_MS = 2600;
+
+export const GLISTEN_MIN_DELAY_MS = 20_000;
+export const GLISTEN_MAX_DELAY_MS = 60_000;
+export const GLISTEN_VISIBLE_MS = 1200;
