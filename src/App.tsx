@@ -11,7 +11,7 @@ function App() {
   const status = deriveStatus(events, categories, statusOverride, new Date());
 
   return (
-    <div className="flex min-h-screen flex-col bg-void sm:flex-row">
+    <div className="flex min-h-screen flex-col sm:flex-row">
       <CosmicBackground />
       <Sidebar
         bio="Building things, moving things, and figuring out what's next."

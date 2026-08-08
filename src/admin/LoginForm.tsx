@@ -26,7 +26,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-void">
+    <div className="flex min-h-screen items-center justify-center">
       <CosmicBackground />
       <form
         onSubmit={handleSubmit}
