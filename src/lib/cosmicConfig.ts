@@ -1,0 +1,3 @@
+export const SHOOTING_STAR_MIN_DELAY_MS = 3 * 60_000;
+export const SHOOTING_STAR_MAX_DELAY_MS = 10 * 60_000;
+export const SHOOTING_STAR_VISIBLE_MS = 2600;

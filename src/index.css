@@ -50,3 +50,44 @@ body {
   background: radial-gradient(circle at 35% 30%, #FFD9A8 0%, #FF8A3D 28%, #C5501A 55%, #5C1E08 78%, #08080B 100%);
   box-shadow: 0 40px 80px -20px rgba(255, 120, 40, 0.35);
 }
+
+.cosmic-shooting-star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 5px 1px rgba(255, 255, 255, 0.7);
+  offset-rotate: auto;
+  offset-distance: 0%;
+  opacity: 0;
+}
+
+.cosmic-shooting-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 55px;
+  height: 1px;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.75), transparent);
+  transform: translateY(-50%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cosmic-shooting-star {
+    animation: cosmic-shoot 2.6s linear forwards;
+  }
+}
+
+@keyframes cosmic-shoot {
+  0%   { offset-distance: 0%;  opacity: 0;    transform: scale(0.5); }
+  10%  { offset-distance: 3%;  opacity: 1;    transform: scale(1); }
+  35%  { offset-distance: 30%; opacity: 1;    transform: scale(0.95); }
+  60%  { offset-distance: 52%; opacity: 0.85; transform: scale(0.85); }
+  78%  { offset-distance: 70%; opacity: 0.55; transform: scale(0.7); }
+  92%  { offset-distance: 85%; opacity: 0.25; transform: scale(0.5); }
+  100% { offset-distance: 100%; opacity: 0;   transform: scale(0.35); }
+}
