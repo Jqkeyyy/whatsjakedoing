@@ -20,8 +20,8 @@ export function WeekView({ date, events, categories, onEventClick }: WeekViewPro
           .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
 
         return (
-          <div key={day.toISOString()} className="rounded-xl border-2 border-ink bg-white p-2">
-            <p className="text-xs font-semibold uppercase text-stone-500">
+          <div key={day.toISOString()} className="rounded-xl bg-surface p-2 shadow-depth">
+            <p className="text-xs font-semibold uppercase text-faint">
               {formatWeekdayLabel(day)}
             </p>
             <div className="mt-2 flex flex-col gap-1">
@@ -34,9 +34,9 @@ export function WeekView({ date, events, categories, onEventClick }: WeekViewPro
                     onClick={onEventClick ? () => onEventClick(event) : undefined}
                     role={onEventClick ? 'button' : undefined}
                   >
-                    <CategoryDot color={category?.color ?? '#292524'} />
-                    <span className="ml-1">{event.title}</span>
-                    <span className="ml-1 text-stone-500">
+                    <CategoryDot color={category?.color ?? '#FF8A3D'} />
+                    <span className="ml-1 text-ink">{event.title}</span>
+                    <span className="ml-1 text-faint">
                       {formatTimeRange(event.startAt, event.endAt)}
                     </span>
                   </div>

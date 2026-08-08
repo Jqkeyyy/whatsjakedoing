@@ -16,9 +16,9 @@ export function DayView({ date, events, categories, onEventClick }: DayViewProps
 
   return (
     <div>
-      <h2 className="font-display text-lg text-ink">{formatDayHeading(date)}</h2>
+      <h2 className="font-display text-lg font-extrabold tracking-tight text-ink">{formatDayHeading(date)}</h2>
       <div className="mt-3 flex flex-col gap-2">
-        {sorted.length === 0 && <p className="text-sm text-stone-500">Nothing scheduled.</p>}
+        {sorted.length === 0 && <p className="text-sm text-muted">Nothing scheduled.</p>}
         {sorted.map((event) => (
           <EventCard
             key={event.id}
