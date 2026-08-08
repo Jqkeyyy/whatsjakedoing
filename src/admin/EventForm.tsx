@@ -78,12 +78,14 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-ink/40 p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-void/80 p-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md rounded-2xl border-2 border-ink bg-white p-6 shadow-offset"
+        className="w-full max-w-md rounded-2xl bg-surface p-6 shadow-depth"
       >
-        <h2 className="font-display text-lg text-ink">{seriesId ? 'Edit event' : 'New event'}</h2>
+        <h2 className="font-display text-lg font-extrabold tracking-tight text-ink">
+          {seriesId ? 'Edit event' : 'New event'}
+        </h2>
 
         <label htmlFor="event-title" className="mt-3 block text-sm font-semibold text-ink">
           Title
@@ -93,7 +95,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
         />
 
         <label htmlFor="event-category" className="mt-3 block text-sm font-semibold text-ink">
@@ -103,7 +105,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           id="event-category"
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
         >
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
@@ -119,7 +121,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           id="event-location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
         />
 
         <label htmlFor="event-start" className="mt-3 block text-sm font-semibold text-ink">
@@ -131,7 +133,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           value={start}
           onChange={(e) => setStart(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
         />
 
         <label htmlFor="event-end" className="mt-3 block text-sm font-semibold text-ink">
@@ -143,7 +145,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
           value={end}
           onChange={(e) => setEnd(e.target.value)}
           required
-          className="mt-1 w-full rounded-lg border-2 border-ink px-2 py-1"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
         />
 
         <label className="mt-3 flex items-center gap-2 text-sm font-semibold text-ink">
@@ -152,7 +154,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
         </label>
 
         {isRecurring && (
-          <div className="mt-2 flex flex-col gap-2 rounded-lg border-2 border-ink p-3">
+          <div className="mt-2 flex flex-col gap-2 rounded-lg border border-hairline p-3">
             <label htmlFor="event-freq" className="text-sm font-semibold text-ink">
               Frequency
             </label>
@@ -160,7 +162,7 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
               id="event-freq"
               value={freq}
               onChange={(e) => setFreq(e.target.value as RecurrenceRule['freq'])}
-              className="rounded-lg border-2 border-ink px-2 py-1"
+              className="rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
             >
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
@@ -189,12 +191,12 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
               value={until}
               onChange={(e) => setUntil(e.target.value)}
               required
-              className="rounded-lg border-2 border-ink px-2 py-1"
+              className="rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
             />
           </div>
         )}
 
-        {error && <p className="mt-2 text-sm text-terracotta">{error}</p>}
+        {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
 
         <div className="mt-4 flex justify-between">
           <button type="button" onClick={onClose} className="text-sm font-semibold text-ink">
@@ -205,14 +207,14 @@ export function EventForm({ categories, initialEvent, onSaved, onClose }: EventF
               <button
                 type="button"
                 onClick={handleDelete}
-                className="rounded-full border-2 border-ink px-3 py-1.5 text-sm font-semibold text-terracotta"
+                className="rounded-full bg-surface px-3 py-1.5 text-sm font-semibold text-red-400 shadow-depth"
               >
                 Delete
               </button>
             )}
             <button
               type="submit"
-              className="rounded-full border-2 border-ink bg-terracotta px-3 py-1.5 text-sm font-semibold text-white"
+              className="rounded-full bg-ember px-3 py-1.5 text-sm font-semibold text-void"
             >
               Save
             </button>
