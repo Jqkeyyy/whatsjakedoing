@@ -49,4 +49,33 @@ describe('CosmicBackground', () => {
     });
     expect(screen.queryByTestId('cosmic-shooting-star')).not.toBeInTheDocument();
   });
+
+  it('does not render a glisten sparkle on initial mount', () => {
+    vi.mocked(usePrefersReducedMotion).mockReturnValue(false);
+    render(<CosmicBackground />);
+    expect(screen.queryByTestId('cosmic-glisten')).not.toBeInTheDocument();
+  });
+
+  it('shows a glisten sparkle once its random delay elapses', () => {
+    vi.useFakeTimers();
+    vi.mocked(usePrefersReducedMotion).mockReturnValue(false);
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+
+    render(<CosmicBackground />);
+    act(() => {
+      vi.advanceTimersByTime(20_000);
+    });
+    expect(screen.getByTestId('cosmic-glisten')).toBeInTheDocument();
+  });
+
+  it('never shows a glisten sparkle when reduced motion is on', () => {
+    vi.useFakeTimers();
+    vi.mocked(usePrefersReducedMotion).mockReturnValue(true);
+
+    render(<CosmicBackground />);
+    act(() => {
+      vi.advanceTimersByTime(5 * 60_000);
+    });
+    expect(screen.queryByTestId('cosmic-glisten')).not.toBeInTheDocument();
+  });
 });
