@@ -22,15 +22,15 @@ export function MonthView({ date, events, categories }: MonthViewProps) {
             return (
               <div
                 key={day.toISOString()}
-                className={`min-h-[64px] rounded-lg border border-stone-300 p-1 ${
-                  inMonth ? 'bg-white' : 'bg-stone-100 text-stone-400'
+                className={`min-h-[64px] rounded-lg p-1 ${
+                  inMonth ? 'bg-surface text-ink' : 'bg-void text-faint'
                 }`}
               >
                 <p className="text-xs">{day.getDate()}</p>
                 <div className="mt-1 flex flex-wrap gap-0.5">
                   {dayEvents.map((event) => {
                     const category = categories.find((c) => c.id === event.categoryId);
-                    return <CategoryDot key={event.id} color={category?.color ?? '#292524'} />;
+                    return <CategoryDot key={event.id} color={category?.color ?? '#FF8A3D'} />;
                   })}
                 </div>
               </div>

@@ -53,8 +53,8 @@ export function CalendarTabs({
             key={mode}
             type="button"
             onClick={() => setView(mode)}
-            className={`rounded-full border-2 border-ink px-3 py-1 text-sm font-semibold capitalize ${
-              view === mode ? 'bg-terracotta text-white' : 'bg-white text-ink'
+            className={`rounded-full px-3 py-1 text-sm font-semibold capitalize ${
+              view === mode ? 'bg-ember text-void' : 'bg-surface text-ink'
             }`}
           >
             {mode}
