@@ -4,6 +4,7 @@ import { deriveStatus } from './lib/status';
 import { Sidebar } from './components/Sidebar';
 import { StatusHero } from './components/StatusHero';
 import { CalendarTabs } from './components/CalendarTabs';
+import { CosmicBackground } from './components/CosmicBackground';
 
 function App() {
   const { categories, events, statusOverride, loading, error } = useCalendarData();
@@ -11,6 +12,7 @@ function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-void sm:flex-row">
+      <CosmicBackground />
       <Sidebar
         bio="Building things, moving things, and figuring out what's next."
         hubLinks={mockHubLinks}
