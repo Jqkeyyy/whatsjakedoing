@@ -25,12 +25,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream">
+    <div className="flex min-h-screen items-center justify-center bg-void">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl border-2 border-ink bg-white p-6 shadow-offset"
+        className="w-full max-w-sm rounded-2xl bg-surface p-6 shadow-depth"
       >
-        <h1 className="font-display text-xl text-ink">Admin login</h1>
+        <h1 className="font-display text-xl font-extrabold tracking-tight text-ink">Admin login</h1>
         <label htmlFor="admin-password" className="mt-4 block text-sm font-semibold text-ink">
           Password
         </label>
@@ -39,13 +39,13 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border-2 border-ink px-3 py-2"
+          className="mt-1 w-full rounded-lg border border-hairline bg-void px-3 py-2 text-ink focus:border-ember focus:outline-none"
         />
-        {error && <p className="mt-2 text-sm text-terracotta">{error}</p>}
+        {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="mt-4 w-full rounded-full border-2 border-ink bg-terracotta px-4 py-2 font-semibold text-white disabled:opacity-50"
+          className="mt-4 w-full rounded-full bg-ember px-4 py-2 font-semibold text-void disabled:opacity-50"
         >
           Log in
         </button>
