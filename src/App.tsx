@@ -10,14 +10,14 @@ function App() {
   const status = deriveStatus(events, categories, statusOverride, new Date());
 
   return (
-    <div className="flex min-h-screen flex-col bg-cream sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-void sm:flex-row">
       <Sidebar
         bio="Building things, moving things, and figuring out what's next."
         hubLinks={mockHubLinks}
       />
       <main className="flex-1 p-4 sm:p-8">
-        {loading && <p className="text-sm text-stone-500">Loading…</p>}
-        {error && <p className="text-sm text-terracotta">{error}</p>}
+        {loading && <p className="text-sm text-muted">Loading…</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
         {!loading && !error && (
           <>
             <StatusHero status={status} />
