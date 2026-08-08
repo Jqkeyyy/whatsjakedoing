@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { login } from '../lib/adminApi';
+import { CosmicBackground } from '../components/CosmicBackground';
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -26,6 +27,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-void">
+      <CosmicBackground />
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded-2xl bg-surface p-6 shadow-depth"

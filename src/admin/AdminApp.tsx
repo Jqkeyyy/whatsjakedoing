@@ -8,6 +8,7 @@ import { LoginForm } from './LoginForm';
 import { CategoryManager } from './CategoryManager';
 import { EventForm } from './EventForm';
 import { StatusOverrideControl } from './StatusOverrideControl';
+import { CosmicBackground } from '../components/CosmicBackground';
 import type { CalendarEvent } from '../types';
 
 export function AdminApp() {
@@ -45,6 +46,7 @@ export function AdminApp() {
 
   return (
     <div className="min-h-screen p-4 sm:p-8">
+      <CosmicBackground />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <a href="/" className="text-sm font-semibold text-ink underline">
