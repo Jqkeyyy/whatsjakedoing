@@ -42,8 +42,8 @@ export function StatusOverrideControl({ current, onChange }: StatusOverrideContr
   }
 
   return (
-    <div className="rounded-2xl border-2 border-ink bg-white p-4 shadow-offset">
-      <h2 className="font-display text-lg text-ink">Status override</h2>
+    <div className="rounded-2xl bg-surface p-4 shadow-depth">
+      <h2 className="font-display text-lg font-extrabold tracking-tight text-ink">Status override</h2>
 
       {current ? (
         <div className="mt-2 flex items-center justify-between">
@@ -54,7 +54,7 @@ export function StatusOverrideControl({ current, onChange }: StatusOverrideContr
           <button
             type="button"
             onClick={handleClear}
-            className="rounded-full border-2 border-ink px-3 py-1.5 text-sm font-semibold text-terracotta"
+            className="rounded-full bg-void px-3 py-1.5 text-sm font-semibold text-red-400 shadow-depth"
           >
             Clear
           </button>
@@ -68,7 +68,7 @@ export function StatusOverrideControl({ current, onChange }: StatusOverrideContr
             id="override-text"
             value={statusText}
             onChange={(e) => setStatusText(e.target.value)}
-            className="rounded-lg border-2 border-ink px-2 py-1"
+            className="rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
           />
           <label className="flex items-center gap-2 text-sm text-ink">
             <input type="checkbox" checked={isBusy} onChange={(e) => setIsBusy(e.target.checked)} />
@@ -83,12 +83,12 @@ export function StatusOverrideControl({ current, onChange }: StatusOverrideContr
             value={until}
             onChange={(e) => setUntil(e.target.value)}
             required
-            className="rounded-lg border-2 border-ink px-2 py-1"
+            className="rounded-lg border border-hairline bg-void px-2 py-1 text-ink focus:border-ember focus:outline-none"
           />
-          {error && <p className="text-sm text-terracotta">{error}</p>}
+          {error && <p className="text-sm text-red-400">{error}</p>}
           <button
             type="submit"
-            className="rounded-full border-2 border-ink bg-terracotta px-3 py-1.5 text-sm font-semibold text-white"
+            className="rounded-full bg-ember px-3 py-1.5 text-sm font-semibold text-void"
           >
             Set status
           </button>
