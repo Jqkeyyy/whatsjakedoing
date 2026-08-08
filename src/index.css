@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: #08080B;
+  color: #F5F3EF;
 }
 
 .cosmic-starfield {
@@ -96,6 +101,7 @@ body {
   position: absolute;
   width: 16px;
   height: 16px;
+  opacity: 0;
 }
 
 .cosmic-glisten::before,
