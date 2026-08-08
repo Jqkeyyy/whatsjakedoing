@@ -44,28 +44,28 @@ export function AdminApp() {
   }
 
   return (
-    <div className="min-h-screen bg-cream p-4 sm:p-8">
+    <div className="min-h-screen p-4 sm:p-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <a href="/" className="text-sm font-semibold text-ink underline">
             ← Calendar
           </a>
-          <h1 className="font-display text-xl text-ink">Admin</h1>
+          <h1 className="font-display text-xl font-extrabold tracking-tight text-ink">Admin</h1>
         </div>
         <button
           type="button"
           onClick={() => {
             void handleLogout();
           }}
-          className="rounded-full border-2 border-ink px-3 py-1.5 text-sm font-semibold text-ink"
+          className="rounded-full bg-surface px-3 py-1.5 text-sm font-semibold text-ink shadow-depth"
         >
           Log out
         </button>
       </div>
 
-      {logoutError && <p className="mt-4 text-sm text-terracotta">{logoutError}</p>}
-      {loading && <p className="mt-4 text-sm text-stone-500">Loading…</p>}
-      {error && <p className="mt-4 text-sm text-terracotta">{error}</p>}
+      {logoutError && <p className="mt-4 text-sm text-red-400">{logoutError}</p>}
+      {loading && <p className="mt-4 text-sm text-muted">Loading…</p>}
+      {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
 
       {!loading && !error && (
         <>
@@ -97,7 +97,7 @@ export function AdminApp() {
                 setShowEventForm(true);
               }}
               aria-label="Add event"
-              className="fixed bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full border-2 border-ink bg-terracotta text-2xl text-white shadow-offset"
+              className="fixed bottom-6 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-ember text-2xl text-void shadow-depth"
             >
               +
             </button>
