@@ -5,6 +5,16 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # Major bump breaks the PostCSS plugin API; needs a manual migration.
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      # react-dom major bumps arrive without a matching react/@types/react
+      # bump, which breaks npm install with a peer-dependency conflict.
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
