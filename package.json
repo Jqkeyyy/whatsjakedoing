@@ -13,7 +13,7 @@
     "secrets:generate": "node scripts/generate-admin-secrets.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
+    "@supabase/supabase-js": "^2.112.4",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.0",
     "react": "^18.3.1",
