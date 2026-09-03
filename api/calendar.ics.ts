@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from './_lib/http';
 import { getSupabaseAdmin } from './_lib/supabaseAdmin';
 import { buildIcsFeed } from './_lib/ics';
 

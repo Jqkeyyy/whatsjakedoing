@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '../_lib/http';
 import handler from '../calendar.ics';
 import * as supabaseAdmin from '../_lib/supabaseAdmin';
 

@@ -1,4 +1,4 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from './_lib/http';
 import { requireSession } from './_lib/auth';
 import { getSupabaseAdmin } from './_lib/supabaseAdmin';
 

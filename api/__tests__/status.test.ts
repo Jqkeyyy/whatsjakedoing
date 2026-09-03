@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '../_lib/http';
 import handler from '../status';
 import * as auth from '../_lib/auth';
 import * as supabaseAdmin from '../_lib/supabaseAdmin';
