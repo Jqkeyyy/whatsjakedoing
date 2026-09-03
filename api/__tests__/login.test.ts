@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '../_lib/http';
 import bcrypt from 'bcryptjs';
 import handler from '../login';
 import * as auth from '../_lib/auth';
@@ -38,7 +38,7 @@ describe('GET /api/login', () => {
 describe('POST /api/login', () => {
   beforeEach(() => {
     process.env.ADMIN_PASSWORD_HASH = bcrypt.hashSync('correct-password', 10);
-    process.env.SESSION_SECRET = 'test-secret';
+    process.env.SESSION_SECRET = 'test-secret-that-is-at-least-32-bytes-long';
   });
 
   it('sets a session cookie and returns 200 for the correct password', async () => {
@@ -54,7 +54,7 @@ describe('POST /api/login', () => {
     const res = mockRes();
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.setHeader).not.toHaveBeenCalled();
+    expect(res.setHeader).not.toHaveBeenCalledWith('Set-Cookie', expect.anything());
   });
 
   it('returns 400 when no password is provided', async () => {
@@ -69,6 +69,29 @@ describe('POST /api/login', () => {
     const res = mockRes();
     await handler(req, res);
     expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 400 when the password exceeds bcrypt\'s byte limit', async () => {
+    const req = mockReq({ method: 'POST', body: { password: 'a'.repeat(73) } });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('returns 403 for a cross-origin login attempt', async () => {
+    const req = mockReq({
+      method: 'POST',
+      body: { password: 'correct-password' },
+      headers: {
+        origin: 'https://attacker.example',
+        'x-forwarded-host': 'calendar.example.com',
+        'x-forwarded-proto': 'https',
+      },
+    });
+    const res = mockRes();
+    await handler(req, res);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.setHeader).not.toHaveBeenCalledWith('Set-Cookie', expect.anything());
   });
 
   it('returns 500 (not 400) when ADMIN_PASSWORD_HASH is not configured, and logs the misconfiguration', async () => {

@@ -1,10 +1,25 @@
+# Dependencies and build output
 node_modules/
 dist/
-.env
-.env.local
-.env*.local
-.vercel
-.superpowers/
+coverage/
 *.tsbuildinfo
 vite.config.d.ts
 vite.config.js
+
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Local tool state
+.vercel/
+.claude/
+.superpowers/
+.codex/
+
+# Logs and editor/OS files
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

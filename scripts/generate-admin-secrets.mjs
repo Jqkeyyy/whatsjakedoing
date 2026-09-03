@@ -17,12 +17,17 @@ if (passwordLineIndex === -1) {
 }
 
 const password = lines[passwordLineIndex].slice('ADMIN_PASSWORD='.length);
-if (!password) {
-  console.error('ADMIN_PASSWORD is empty.');
+const passwordBytes = Buffer.byteLength(password, 'utf8');
+if (password.length < 12) {
+  console.error('ADMIN_PASSWORD must be at least 12 characters.');
+  process.exit(1);
+}
+if (passwordBytes > 72) {
+  console.error('ADMIN_PASSWORD must be at most 72 UTF-8 bytes (bcrypt limit).');
   process.exit(1);
 }
 
-const hash = bcrypt.hashSync(password, 10);
+const hash = bcrypt.hashSync(password, 12);
 const sessionSecret = randomBytes(32).toString('hex');
 
 const filtered = lines.filter(

@@ -1,12 +1,25 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from '../http';
 import jwt from 'jsonwebtoken';
 import {
   createSessionCookie,
   clearSessionCookie,
   hasValidSession,
+  hasAllowedOrigin,
+  requireAllowedOrigin,
   requireSession,
 } from '../auth';
+
+const TEST_SECRET = 'test-secret-that-is-at-least-32-bytes-long';
+
+function validToken(secret = TEST_SECRET): string {
+  return jwt.sign({ role: 'admin' }, secret, {
+    algorithm: 'HS256',
+    audience: 'whats-jake-doing-admin',
+    issuer: 'whats-jake-doing',
+    subject: 'admin',
+  });
+}
 
 function mockRes(): VercelResponse {
   const res: Partial<VercelResponse> = {};
@@ -18,15 +31,16 @@ function mockRes(): VercelResponse {
 
 describe('session cookie helpers', () => {
   beforeEach(() => {
-    process.env.SESSION_SECRET = 'test-secret';
+    process.env.SESSION_SECRET = TEST_SECRET;
   });
 
-  it('createSessionCookie includes HttpOnly, SameSite=Lax, and a 90-day Max-Age', () => {
+  it('createSessionCookie includes hardened attributes and a 7-day Max-Age', () => {
     const cookie = createSessionCookie(true);
     expect(cookie).toContain('HttpOnly');
-    expect(cookie).toContain('SameSite=Lax');
+    expect(cookie).toContain('SameSite=Strict');
     expect(cookie).toContain('Secure');
-    expect(cookie).toContain(`Max-Age=${60 * 60 * 24 * 90}`);
+    expect(cookie).toContain('Priority=High');
+    expect(cookie).toContain(`Max-Age=${60 * 60 * 24 * 7}`);
   });
 
   it('createSessionCookie omits Secure when secure=false (local http dev)', () => {
@@ -39,7 +53,7 @@ describe('session cookie helpers', () => {
   });
 
   it('hasValidSession returns true for a token signed with the current secret', () => {
-    const token = jwt.sign({ role: 'admin' }, 'test-secret');
+    const token = validToken();
     const req = { cookies: { session: token } } as unknown as VercelRequest;
     expect(hasValidSession(req)).toBe(true);
   });
@@ -50,20 +64,62 @@ describe('session cookie helpers', () => {
   });
 
   it('hasValidSession returns false for a token signed with a different secret', () => {
-    const token = jwt.sign({ role: 'admin' }, 'wrong-secret');
+    const token = validToken('wrong-secret-that-is-at-least-32-bytes-long');
     const req = { cookies: { session: token } } as unknown as VercelRequest;
     expect(hasValidSession(req)).toBe(false);
+  });
+
+  it('hasValidSession rejects a token without the required claims', () => {
+    const token = jwt.sign({ role: 'admin' }, TEST_SECRET);
+    const req = { cookies: { session: token } } as unknown as VercelRequest;
+    expect(hasValidSession(req)).toBe(false);
+  });
+
+  it('createSessionCookie rejects a weak session secret', () => {
+    process.env.SESSION_SECRET = 'too-short';
+    expect(() => createSessionCookie(true)).toThrow(/at least 32/);
+  });
+});
+
+describe('origin checks', () => {
+  it('allows a matching forwarded origin', () => {
+    const req = {
+      headers: {
+        origin: 'https://calendar.example.com',
+        'x-forwarded-host': 'calendar.example.com',
+        'x-forwarded-proto': 'https',
+      },
+    } as unknown as VercelRequest;
+    expect(hasAllowedOrigin(req)).toBe(true);
+  });
+
+  it('blocks a cross-origin request', () => {
+    const req = {
+      headers: {
+        origin: 'https://attacker.example',
+        'x-forwarded-host': 'calendar.example.com',
+        'x-forwarded-proto': 'https',
+      },
+    } as unknown as VercelRequest;
+    const res = mockRes();
+    expect(requireAllowedOrigin(req, res)).toBe(false);
+    expect(res.status).toHaveBeenCalledWith(403);
+  });
+
+  it('allows requests without an Origin header for non-browser clients', () => {
+    const req = { headers: {} } as unknown as VercelRequest;
+    expect(hasAllowedOrigin(req)).toBe(true);
   });
 });
 
 describe('requireSession', () => {
   beforeEach(() => {
-    process.env.SESSION_SECRET = 'test-secret';
+    process.env.SESSION_SECRET = TEST_SECRET;
   });
 
   it('returns true and does not touch res when the session is valid', () => {
-    const token = jwt.sign({ role: 'admin' }, 'test-secret');
-    const req = { cookies: { session: token } } as unknown as VercelRequest;
+    const token = validToken();
+    const req = { cookies: { session: token }, headers: {} } as unknown as VercelRequest;
     const res = mockRes();
     expect(requireSession(req, res)).toBe(true);
     expect(res.status).not.toHaveBeenCalled();
